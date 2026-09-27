@@ -16,6 +16,18 @@
   flex-direction: column;
 }
 
+.login-logo-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.login-logo {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
 h1 { font-family: 'Cormorant Garamond', serif; font-size: 28px; }
 .subtitle { font-size: 11px; color: #665650; margin-bottom: 20px; }
 .error { color: #b3261e; font-size: 12px; margin-bottom: 12px; }

@@ -13,8 +13,21 @@
 
   h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-size: 36px;
+    font-size: 32px;
   }
+}
+
+.dash-brand {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.dash-logo {
+  height: 40px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logout {

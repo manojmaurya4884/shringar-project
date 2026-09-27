@@ -1,7 +1,10 @@
 <div class="login-wrapper">
   <form class="login-card" (ngSubmit)="onSubmit()">
+    <div class="login-logo-wrap">
+      <img src="assets/images/shringar-logo.png" alt="शृinGAR by Lakshuu" class="login-logo" />
+    </div>
     <h1>Admin Login</h1>
-    <p class="subtitle">Shringar by Lakshuu — management panel</p>
+    <p class="subtitle">शृinGAR by Lakshuu — management panel</p>
 
     @if (errorMessage()) {
       <p class="error">{{ errorMessage() }}</p>
