@@ -1,0 +1,10 @@
+# Environment secrets — never commit real credentials
+.env
+**/.env
+**/.env.*
+!**/.env.example
+
+# Dependencies and generated build artifacts
+node_modules/
+frontend/dist/
+frontend/.angular/

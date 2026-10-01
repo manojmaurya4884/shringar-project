@@ -1,6 +1,29 @@
-const fs = require('fs');
 const path = require('path');
+const { put, del } = require('@vercel/blob');
 const Product = require('../models/Product');
+
+async function uploadProductImage(file) {
+  const ext = path.extname(file.originalname).toLowerCase();
+  const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+  const pathname = `products/product-${uniqueSuffix}${ext}`;
+
+  const blob = await put(pathname, file.buffer, {
+    access: 'public',
+    contentType: file.mimetype,
+  });
+
+  return blob.url;
+}
+
+async function deleteProductImage(imageUrl) {
+  if (!imageUrl) return;
+  try {
+    await del(imageUrl);
+  } catch (err) {
+    // Ignore missing/legacy local URLs so product CRUD is not blocked
+    console.error('Blob image delete skipped:', err.message);
+  }
+}
 
 // GET /api/products  (public - used by the storefront)
 async function getAllProducts(req, res) {
@@ -37,7 +60,7 @@ async function createProduct(req, res) {
       return res.status(400).json({ message: 'Product image is required' });
     }
 
-    const imageUrl = `/uploads/products/${req.file.filename}`;
+    const imageUrl = await uploadProductImage(req.file);
 
     const product = await Product.create({
       name,
@@ -79,10 +102,10 @@ async function updateProduct(req, res) {
     if (heroOrder !== undefined) product.heroOrder = Number(heroOrder);
 
     if (req.file) {
-      // delete the old image file from disk before saving the new one
-      const oldPath = path.join(__dirname, '..', product.imageUrl);
-      fs.unlink(oldPath, () => {}); // ignore errors (file may already be gone)
-      product.imageUrl = `/uploads/products/${req.file.filename}`;
+      const previousImageUrl = product.imageUrl;
+      const newImageUrl = await uploadProductImage(req.file);
+      product.imageUrl = newImageUrl;
+      await deleteProductImage(previousImageUrl);
     }
 
     await product.save();
@@ -123,9 +146,7 @@ async function deleteProduct(req, res) {
     const product = await Product.findById(req.params.id);
     if (!product) return res.status(404).json({ message: 'Product not found' });
 
-    // remove the image file from disk
-    const imagePath = path.join(__dirname, '..', product.imageUrl);
-    fs.unlink(imagePath, () => {});
+    await deleteProductImage(product.imageUrl);
 
     await product.deleteOne();
     res.json({ message: 'Product deleted', id: req.params.id });
