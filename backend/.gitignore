@@ -1,0 +1,7 @@
+# Environment secrets — never commit real credentials
+.env
+.env.*
+!.env.example
+
+# Dependencies — install via npm; do not commit
+node_modules/
