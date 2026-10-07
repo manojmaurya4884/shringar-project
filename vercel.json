@@ -1,15 +1,30 @@
 {
-  "buildCommand": "cd frontend && npm install && npm run build",
-  "outputDirectory": "frontend/dist/shringar-frontend/browser",
-  "installCommand": "npm install --prefix backend && npm install --prefix frontend",
+  "services": {
+    "frontend": {
+      "root": "frontend/",
+      "installCommand": "npm install",
+      "buildCommand": "npm run build",
+      "outputDirectory": "dist/shringar-frontend/browser"
+    },
+    "backend": {
+      "root": "backend/",
+      "entrypoint": "server.js",
+      "framework": "express",
+      "installCommand": "npm install"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api"
+      "destination": {
+        "service": "backend"
+      }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": {
+        "service": "frontend"
+      }
     }
   ]
 }
